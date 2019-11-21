@@ -1,4 +1,6 @@
-FROM python:3.6.9-stretch
+FROM jupyter/minimal-notebook
+# ---------------------------------------------------------------------------------------------------------------------
+USER root
 
 RUN apt-get update && apt-get install libgeos-dev -y && apt-get clean
 # ---------------------------------------------------------------------------------------------------------------------
@@ -7,7 +9,7 @@ RUN apt-get update && apt-get install openjdk-8-jdk -y && apt-get clean
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Install Cytomine python client
-RUN git clone https://github.com/cytomine-uliege/Cytomine-python-client.git
+RUN cd / && git clone https://github.com/cytomine-uliege/Cytomine-python-client.git
 RUN cd /Cytomine-python-client && git checkout tags/v2.3.0.poc.1 && pip install .
 RUN rm -r /Cytomine-python-client
 
@@ -52,4 +54,12 @@ ADD wrapper.py /app/wrapper.py
 # for running the wrapper locally
 ADD descriptor.json /app/descriptor.json
 
-ENTRYPOINT ["python", "/app/wrapper.py"]
+# changing access rights to the app folder
+RUN chmod -R a+rx /app
+RUN chmod -R a+rw /icy
+
+USER ${NB_USER}
+COPY . ${HOME}
+USER root
+RUN chown -R ${NB_UID} ${HOME}
+USER ${NB_USER}
