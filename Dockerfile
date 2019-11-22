@@ -41,11 +41,6 @@ RUN cp /neubiaswg5-utilities/bin/* /usr/bin/
 # cleaning
 RUN rm -r /neubiaswg5-utilities
 
-# custom version of imagecodecs to make sure tifffile can read icy-generated images
-RUN pip install numpy==1.13.0
-RUN pip install Cython==0.29.6
-RUN pip install imagecodecs-lite==2019.2.22 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Install Protocol
 ADD protocol.protocol /icy/protocols/protocol.protocol
